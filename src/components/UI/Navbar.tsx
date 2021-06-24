@@ -3,6 +3,7 @@ import { FiArrowRight } from "react-icons/fi";
 import { useHistory } from "react-router";
 import { useDispatch } from 'react-redux'
 import { authActions } from "../../store/auth";
+import { cartActions } from '../../store/cart'
 import { Route } from 'react-router-dom'
 import React from "react";
 
@@ -69,6 +70,7 @@ function Navbar() {
 
   const logoutHandler = () => {
     dispatch(authActions.logout())
+    dispatch(cartActions.resetSavedGames())
     history.push('/login')
   }
 

@@ -40,6 +40,9 @@ const cartSlice = createSlice({
       state.gamesSaved.push(state.cart)
       state.cart = []
       state.totalPrice = 0
+    },
+    resetSavedGames: (state) => {
+      state.gamesSaved = []
     }
   }
 })

@@ -8,8 +8,8 @@ const NavFooter = styled.footer`
   justify-content: center;
   align-items: center;
   border-top: 2px solid #ebebeb;
-  position: fixed;
-  bottom: 0
+  /* position: sticky; */
+  bottom: 0;
 `;
 
 const Text = styled.p`

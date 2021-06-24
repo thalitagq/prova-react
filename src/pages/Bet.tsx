@@ -11,6 +11,8 @@ import Cart from "../components/Cart/Cart";
 const Container = styled.div`
   display: flex;
   justify-content: space-evenly;
+  flex-wrap: wrap;
+  min-height: 100%;
 `;
 
 const Title = styled.h1`
@@ -62,6 +64,9 @@ const AddButton = styled(ButtonGameAction)`
 const Actions = styled.div`
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px
 `;
 
 function Bet() {
@@ -81,7 +86,7 @@ function Bet() {
 
   const addToCartHandler = () => {
     if (selectedNumbers.length < selectedGame["max-number"]) {
-      return alert('Jogo incompleto')
+      return alert("Jogo incompleto");
     }
     dispatch(
       cartActions.addToCart({
@@ -91,9 +96,10 @@ function Bet() {
         numbers: selectedNumbers,
         price: selectedGame.price,
         color: selectedGame.color,
-    }))
-    dispatch(gamesActions.clearGame())
-  }
+      })
+    );
+    dispatch(gamesActions.clearGame());
+  };
 
   return (
     <Container>
@@ -107,11 +113,7 @@ function Bet() {
         </Paragraph>
         <ActionButtonsGames>
           {games.map((game) => (
-            <GameButton
-              color={game.color}
-              key={game.type}
-              text={game.type}
-            />
+            <GameButton color={game.color} key={game.type} text={game.type} />
           ))}
         </ActionButtonsGames>
         <Paragraph style={{ marginBottom: "30px" }}>
@@ -121,7 +123,7 @@ function Bet() {
         </Paragraph>
         <BetNumbers range={selectedGame.range} />
         <Actions>
-          <div>
+          <div style={{ display: 'flex', gap: "5px", flexWrap: 'wrap' }}>
             <ButtonGameAction onClick={completeGameHandler}>
               Complete Game
             </ButtonGameAction>
@@ -134,7 +136,7 @@ function Bet() {
           </AddButton>
         </Actions>
       </BetWraper>
-      <Cart/>
+      <Cart />
     </Container>
   );
 }
