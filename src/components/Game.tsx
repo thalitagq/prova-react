@@ -62,7 +62,7 @@ const Game: React.FC<GameProps> = (props: GameProps) => {
         <Numbers fontSize={props.fontSize|| undefined}>{props.numbers.join(', ')}</Numbers>
         <Info fontSize={props.fontSize|| undefined}>{props.date} - {`(R$${transformPrice(props.price)})`}</Info>
         <GameName color={props.color} fontSize={props.fontSize || undefined}>
-          Lotofacil
+          {props.type}
         </GameName>
       </Wraper>
     </Container>

@@ -1,12 +1,26 @@
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import AuthenticationContaier from "./components/AuthenticationContaier";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Bet from "./pages/Bet";
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
 
 function App() {
+  const { user } = useSelector((state: RootState) => state.auth)
+  
   return (
     <Switch>
+      {!user?.email && (
+        <Route path="/" exact>
+          <Redirect to="/login" />
+        </Route>
+      )}
+      {/* {isLoggedIn && (
+        <Route path="/profile">
+          <UserProfile />
+        </Route>
+      )} */}
       <Route path="/login">
         <AuthenticationContaier />
       </Route>
@@ -21,7 +35,7 @@ function App() {
           <Home />
         </Route>
         <Route path="/new-bet">
-          <Bet/>
+          <Bet />
         </Route>
       </Layout>
     </Switch>

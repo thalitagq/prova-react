@@ -2,7 +2,7 @@ import Game from "../Game";
 import { IoTrashOutline } from "react-icons/io5";
 import styled from "styled-components";
 import { GameProps } from "../Game";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { cartActions } from "../../store/cart";
 
 const Container = styled.div`
@@ -22,12 +22,12 @@ const CartItem: React.FC<GameProps> = (props: GameProps) => {
   const dispatch = useDispatch()
   
   const deleteGameHandler = () => {
-    dispatch(cartActions.removeFromCart(props.id));
+    dispatch(cartActions.removeFromCart({id: props.id, price: props.price}));
   }
 
   return (
     <Container>
-      <DeleteButton>
+      <DeleteButton onClick={deleteGameHandler}>
         <IoTrashOutline />
       </DeleteButton>
       <Game

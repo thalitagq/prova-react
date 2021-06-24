@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import gamesJson from './games.json'
 
-type Game = {
+export type Game = {
   type: string;
   description: string;
   range: number;

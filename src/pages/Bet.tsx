@@ -71,8 +71,6 @@ function Bet() {
 
   const dispatch = useDispatch();
 
-  const selectBetHandler = () => {};
-
   const clearGameHandler = () => {
     dispatch(gamesActions.clearGame());
   };
@@ -113,7 +111,6 @@ function Bet() {
               color={game.color}
               key={game.type}
               text={game.type}
-              onClick={selectBetHandler}
             />
           ))}
         </ActionButtonsGames>

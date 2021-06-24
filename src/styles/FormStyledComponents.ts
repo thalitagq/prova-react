@@ -56,6 +56,7 @@ export const ActionButton1 = styled.button`
   background-color: transparent;
   color: #b5c401;
   text-decoration: none;
+  cursor: pointer;
 `;
 
 export const ActionButton2 = styled(ActionButton1)`

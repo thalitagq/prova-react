@@ -12,11 +12,13 @@ export type Item = {
 type InitialStateType = {
   cart: Item[];
   totalPrice: number;
+  gamesSaved: Item[][]
 };
 
 const initialState: InitialStateType = {
   cart: [],
-  totalPrice: 0
+  totalPrice: 0,
+  gamesSaved: []
 };
 
 const cartSlice = createSlice({
@@ -27,11 +29,18 @@ const cartSlice = createSlice({
       state.cart.push({ ...action.payload, id: new Date().getTime() });
       state.totalPrice += action.payload.price;
     },
-
-    removeFromCart: (state, action: PayloadAction<number>)=>{
-      state.cart = state.cart.filter( item => item.id !== action.payload)
-      state.totalPrice -= action.payload;
+    removeFromCart: (state, action: PayloadAction<{id: number, price: number}>)=>{
+      state.cart = state.cart.filter( item => item.id !== action.payload.id)
+      state.totalPrice -= action.payload.price;
     },
+    saveGame: (state) => {
+      if (state.totalPrice < 30) {
+        return alert('As apostas devem ser de no mínimo R$ 30,00')
+      }
+      state.gamesSaved.push(state.cart)
+      state.cart = []
+      state.totalPrice = 0
+    }
   }
 })
 

@@ -27,7 +27,6 @@ const ButtonActive = styled(Button)`
 type ButtonProps = {
   color: string;
   text: string;
-  onClick: () => void;
 };
 
 const GameButton: React.FC<ButtonProps> = (props: ButtonProps) => {

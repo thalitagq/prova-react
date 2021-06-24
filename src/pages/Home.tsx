@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import Game from "../components/Game";
+import GameTag, { GameProps } from "../components/Game";
 import { RootState } from "../store/index";
 import { useSelector } from "react-redux";
 import { ActionButton1 } from "../styles/FormStyledComponents";
 import { FiArrowRight } from "react-icons/fi";
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 import GameButton from "../components/GameButton";
+import { useEffect, useState } from "react";
 
 const Title = styled.h1`
   color: #707070;
@@ -13,12 +14,18 @@ const Title = styled.h1`
   font-weight: 600;
   font-style: italic;
   margin-right: 45px;
+  margin-bottom: 20px;
 `;
 
 const Nav = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-evenly;
+  margin-bottom: 20px;
+  gap: 20px;
+  flex: 1;
+  align-items: flex-start;
 `;
 
 const Filters = styled.div`
@@ -42,21 +49,48 @@ const ActionButton = styled(ActionButton1)`
   }
 `;
 
+const Container = styled.div`
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: space-between;
+`;
+
 function Home() {
-  const games = useSelector((state: RootState) => state.games.games);
+  const { games, selectedGame } = useSelector(
+    (state: RootState) => state.games
+  );
+  const { gamesSaved } = useSelector((state: RootState) => state.cart);
+  const [filteredGames, setFilteredGames] = useState<GameProps[]>([]);
 
-  const filterHandler = () =>{
-
-  }
+  useEffect(() => {
+    for (const bet of gamesSaved) {
+      setFilteredGames(bet.filter((game) => game.type === selectedGame.type));
+    }
+  }, [selectedGame, gamesSaved]);
 
   return (
-    <>
-      <Nav>
+    <Container>
+      <div>
         <Title>Recent Games</Title>
+        {filteredGames.map((game) => (
+          <div style={{ marginBottom: "10px" }}>
+            <GameTag
+              date={game.date}
+              price={game.price}
+              color={game.color}
+              key={game.id}
+              id={game.id}
+              numbers={game.numbers}
+              type={game.type}
+            />
+          </div>
+        ))}
+      </div>
+      <Nav>
         <Filters>
           <p>Filters</p>
           {games.map((game) => (
-            <GameButton text={game.type} onClick={filterHandler} color={game.color} key={game.type}/>
+            <GameButton text={game.type} color={game.color} key={game.type} />
           ))}
         </Filters>
         <ActionButton>
@@ -65,8 +99,7 @@ function Home() {
           </Link>
         </ActionButton>
       </Nav>
-      {/* <Game color="#7F3992" /> */}
-    </>
+    </Container>
   );
 }
 

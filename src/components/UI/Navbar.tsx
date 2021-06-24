@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import { FiArrowRight } from "react-icons/fi";
 import { useHistory } from "react-router";
+import { useDispatch } from 'react-redux'
+import { authActions } from "../../store/auth";
+import { Route } from 'react-router-dom'
 import React from "react";
 
 const Nav = styled.nav`
@@ -58,20 +61,28 @@ const WrapTitleAction = styled.div`
 
 function Navbar() {
   const history = useHistory()
+  const dispatch = useDispatch()
 
   const clickHomehandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     history.push('/');
+  }
+
+  const logoutHandler = () => {
+    dispatch(authActions.logout())
+    history.push('/login')
   }
 
   return (
     <Nav>
       <WrapTitleAction>
         <Title>TGL</Title>
-        <ActionButtonHome onClick={clickHomehandler}>Home</ActionButtonHome>
+        <Route path='/new-bet'>
+          <ActionButtonHome onClick={clickHomehandler}>Home</ActionButtonHome>
+        </Route>
       </WrapTitleAction>
       <Actions>
         <ActionButton>Account</ActionButton>
-        <ActionButton>
+        <ActionButton onClick={logoutHandler}>
           Sair <FiArrowRight />
         </ActionButton>
       </Actions>
