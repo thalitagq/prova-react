@@ -16,11 +16,6 @@ function App() {
           <Redirect to="/login" />
         </Route>
       )}
-      {/* {isLoggedIn && (
-        <Route path="/profile">
-          <UserProfile />
-        </Route>
-      )} */}
       <Route path="/login">
         <AuthenticationContaier />
       </Route>

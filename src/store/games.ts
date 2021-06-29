@@ -15,12 +15,14 @@ type InitialStateType = {
   games: Game[],
   selectedGame: Game,
   selectedNumbers: string[],
+  isGameCompleted: boolean
 }
 
 const initialStateObj: InitialStateType = {
   games: gamesJson.types,
   selectedGame: gamesJson.types[0],
   selectedNumbers: [],
+  isGameCompleted: false
 };
 
 const generateRandomNumber = (range: number) => {
@@ -40,6 +42,8 @@ export const gamesSlice = createSlice({
       state.selectedNumbers.push(action.payload);
     },
     removeNumber: (state, action: PayloadAction<string>) => {
+      console.log('remove number');
+      
       state.selectedNumbers = state.selectedNumbers.filter(
         (item) => item !== action.payload
       );
@@ -48,15 +52,25 @@ export const gamesSlice = createSlice({
       state.selectedNumbers = [];
     },
     completeGame: (state) => {
-      const remainingNumbers =
-        state.selectedGame["max-number"] - state.selectedNumbers.length;
+      let remainingNumbers = state.selectedGame["max-number"] - state.selectedNumbers.length;
+      
+      if (remainingNumbers === 0) {
+        remainingNumbers = state.selectedGame["max-number"];
+        state.selectedNumbers = []
+        state.isGameCompleted = false;
+      }
+
       for (let index = 0; index < remainingNumbers; index++) {
         let randomNumber = generateRandomNumber(state.selectedGame.range);
         while (state.selectedNumbers.includes(randomNumber.toString())) {
           randomNumber = generateRandomNumber(remainingNumbers);
         }
+        console.log(randomNumber);
+        
         state.selectedNumbers.push(randomNumber.toString());
       }
+
+      state.isGameCompleted = true
     }
   },
 });

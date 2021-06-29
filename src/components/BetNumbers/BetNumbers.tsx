@@ -10,13 +10,13 @@ const Container = styled.div`
   margin-bottom: 45px;
 `;
 
-const BetNumbers: React.FC<{ range: number }> = (props) => {
+const BetNumbers: React.FC<{ range: number, color: string }> = (props) => {
   const numbers = [];
 
   const onClickNumberHandler = () => {};
 
   for (let index = 1; index <= props.range; index++) {
-    numbers.push(<BetNumber number={index.toString()} onClick={onClickNumberHandler} key={index}/>);
+    numbers.push(<BetNumber number={index.toString()} onClick={onClickNumberHandler} key={index} color={props.color}/>);
   }
 
   return <Container>{numbers}</Container>;

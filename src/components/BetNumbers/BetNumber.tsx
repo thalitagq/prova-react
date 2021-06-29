@@ -17,21 +17,22 @@ const Number = styled.button`
 `;
 
 const NumberActive = styled(Number)`
-  filter: brightness(80%);
+  background-color: ${(props) => props.color || "#000"};
 `;
 
 type BetNumberProps = {
   number: string;
+  color: string;
   onClick: () => void
 }
 
 const BetNumber: React.FC<BetNumberProps> = (props: BetNumberProps) => {
   const [isActive, setIsActive] = useState(false)
-  const {selectedNumbers, selectedGame } = useSelector((state: RootState) => state.games)
+  const {selectedNumbers, selectedGame, isGameCompleted } = useSelector((state: RootState) => state.games)
   const dispatch = useDispatch()
 
   const onClickNumberHandler = () => {
-    if ( selectedNumbers.length ===  selectedGame['max-number']){
+    if ( selectedNumbers.length ===  selectedGame['max-number'] && !selectedNumbers.includes(props.number)){
       return
     }
 
@@ -46,16 +47,27 @@ const BetNumber: React.FC<BetNumberProps> = (props: BetNumberProps) => {
 
   useEffect(() => {
 
-    if (selectedNumbers.length === 0) {
+    console.log('effect number');
+    console.log(selectedNumbers.length);
+    if (
+      (isGameCompleted && !selectedNumbers.includes(props.number)) ||
+      selectedNumbers.length === 0
+    ) {
       setIsActive(false);
     }
+    
+    // if (selectedNumbers.length === 0) {
+    //   console.log('active false');
+      
+    //   setIsActive(false);
+    // }
     if (selectedNumbers.includes(props.number)) {
       setIsActive(true);
     }
-  }, [selectedNumbers, props.number]);
+  }, [selectedNumbers, props.number, isGameCompleted]);
 
   if(isActive)
-    return <NumberActive onClick={onClickNumberHandler}>{props.number}</NumberActive>
+    return <NumberActive onClick={onClickNumberHandler} color={props.color}>{props.number}</NumberActive>
   return <Number onClick={onClickNumberHandler}>{props.number}</Number>
 }
 

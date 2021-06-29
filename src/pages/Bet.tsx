@@ -66,7 +66,7 @@ const Actions = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 20px
+  margin-bottom: 20px;
 `;
 
 function Bet() {
@@ -81,6 +81,9 @@ function Bet() {
   };
 
   const completeGameHandler = () => {
+    // if (selectedGame["max-number"] - selectedNumbers.length === 0) {
+    //   dispatch(gamesActions.clearGame());
+    // }
     dispatch(gamesActions.completeGame());
   };
 
@@ -121,9 +124,9 @@ function Bet() {
           <br />
           {selectedGame.description}
         </Paragraph>
-        <BetNumbers range={selectedGame.range} />
+        <BetNumbers range={selectedGame.range} color={selectedGame.color}/>
         <Actions>
-          <div style={{ display: 'flex', gap: "5px", flexWrap: 'wrap' }}>
+          <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
             <ButtonGameAction onClick={completeGameHandler}>
               Complete Game
             </ButtonGameAction>
