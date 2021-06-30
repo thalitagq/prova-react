@@ -46,21 +46,13 @@ const BetNumber: React.FC<BetNumberProps> = (props: BetNumberProps) => {
   }
 
   useEffect(() => {
-
-    console.log('effect number');
-    console.log(selectedNumbers.length);
     if (
       (isGameCompleted && !selectedNumbers.includes(props.number)) ||
       selectedNumbers.length === 0
     ) {
       setIsActive(false);
     }
-    
-    // if (selectedNumbers.length === 0) {
-    //   console.log('active false');
-      
-    //   setIsActive(false);
-    // }
+
     if (selectedNumbers.includes(props.number)) {
       setIsActive(true);
     }

@@ -12,6 +12,7 @@ import {
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/auth";
 import { useHistory } from 'react-router-dom'
+import { loginUser } from '../store/auth'
 
 function LoginForm() {
   const dispatch = useDispatch();
@@ -23,12 +24,15 @@ function LoginForm() {
     const regex = /^[\w+.]+@\w+\.[\w^_]{2,}(?:\.\w{1,2})?$/;
     if (emailRef.current != null && passwordRef.current != null) {
       if(regex.test(emailRef.current.value) && passwordRef?.current.value.length > 3){
+        // dispatch(
+        //   authActions.login({
+        //     email: emailRef?.current.value,
+        //     password: passwordRef?.current.value,
+        //   })
+        // )
         dispatch(
-          authActions.login({
-            email: emailRef?.current.value,
-            password: passwordRef?.current.value,
-          })
-        )
+          loginUser({email: emailRef?.current.value, password: passwordRef?.current.value})
+        );
         return history.push('/')
       }
       alert('Email ou senha inválidos')
