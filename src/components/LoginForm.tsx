@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import {
@@ -9,16 +9,17 @@ import {
   ActionButton1,
   ActionButton2,
 } from "../styles/FormStyledComponents";
-import { useDispatch } from "react-redux";
-import { authActions } from "../store/auth";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom'
 import { loginUser } from '../store/auth'
+import { RootState } from "../store";
 
 function LoginForm() {
   const dispatch = useDispatch();
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const history = useHistory()
+  const { error } = useSelector((state: RootState) => state.auth);
 
   const loginHandler = () => {
     const regex = /^[\w+.]+@\w+\.[\w^_]{2,}(?:\.\w{1,2})?$/;
@@ -32,8 +33,11 @@ function LoginForm() {
         // )
         dispatch(
           loginUser({email: emailRef?.current.value, password: passwordRef?.current.value})
-        );
-        return history.push('/')
+        )
+        if (!error) {
+          return history.push('/')
+        }
+        return alert(error);
       }
       alert('Email ou senha inválidos')
     }
