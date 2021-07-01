@@ -7,17 +7,26 @@ import {
   Input,
   ActionButton1,
   ActionButton2,
-} from "../styles/FormStyledComponents";
+} from "../../styles/FormStyledComponents";
+import { forgotPassword } from '../../store/auth'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../../store/index'
 
 function ResetPasswordForm() {
   const regex = /^[\w+.]+@\w+\.[\w^_]{2,}(?:\.\w{1,2})?$/;
   const emailRef = useRef<HTMLInputElement>(null);
   const history = useHistory()
+  const dispatch = useDispatch();
+  const { error } = useSelector((state: RootState) => state.auth)
 
   const resetPasswordHandler = () => {
     if (emailRef.current != null) {
       if (regex.test(emailRef.current.value)) {
-        return history.push("/login");
+        dispatch(forgotPassword(emailRef.current.value));
+        if (!error) {
+          return history.push("/new_password");
+        }
+        return alert(error)
       }
       alert("Email inválido");
     }

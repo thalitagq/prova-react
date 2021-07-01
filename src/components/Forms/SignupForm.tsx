@@ -6,12 +6,11 @@ import {
   Input,
   ActionButton1,
   ActionButton2,
-} from "../styles/FormStyledComponents";
+} from "../../styles/FormStyledComponents";
 import { useRef } from "react";
-import { authActions } from "../store/auth";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store";
-import { signupUser } from '../store/auth'
+import { RootState } from "../../store";
+import { signupUser } from '../../store/auth'
 import styled from "styled-components";
 
 const ButtonRegister = styled(ActionButton1)`
@@ -44,12 +43,6 @@ function SignupForm() {
         passwordConfirmRef?.current.value.length > 3 &&
         nameRef.current.value.length > 0
       ) {
-        // dispatch(
-        //   authActions.login({
-        //     email: emailRef?.current.value,
-        //     password: passwordRef?.current.value,
-        //   })
-        // );
         dispatch(
           signupUser({
             username: nameRef?.current.value,

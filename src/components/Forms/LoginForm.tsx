@@ -8,11 +8,11 @@ import {
   ForgetPasswordLink,
   ActionButton1,
   ActionButton2,
-} from "../styles/FormStyledComponents";
+} from "../../styles/FormStyledComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom'
-import { loginUser } from '../store/auth'
-import { RootState } from "../store";
+import { loginUser } from '../../store/auth'
+import { RootState } from "../../store";
 
 function LoginForm() {
   const dispatch = useDispatch();
@@ -25,17 +25,12 @@ function LoginForm() {
     const regex = /^[\w+.]+@\w+\.[\w^_]{2,}(?:\.\w{1,2})?$/;
     if (emailRef.current != null && passwordRef.current != null) {
       if(regex.test(emailRef.current.value) && passwordRef?.current.value.length > 3){
-        // dispatch(
-        //   authActions.login({
-        //     email: emailRef?.current.value,
-        //     password: passwordRef?.current.value,
-        //   })
-        // )
         dispatch(
           loginUser({email: emailRef?.current.value, password: passwordRef?.current.value})
         )
         if (!error) {
-          return history.push('/')
+          history.push('/')
+          return
         }
         return alert(error);
       }

@@ -2,9 +2,10 @@ import React from 'react'
 import styled from 'styled-components';
 import { Route} from "react-router-dom"
 import AppDescription from "./UI/AppDescription";
-import LoginForm from './LoginForm'
-import ResetPasswordForm from './ResetPasswordForm';
-import SingupForm from './SignupForm'
+import LoginForm from './Forms/LoginForm'
+import ResetPasswordForm from './Forms/ResetPasswordForm';
+import SingupForm from './Forms/SignupForm'
+import NewPasswordForm from "./Forms/NewPasswordForm";
 
 const Container = styled.div`
   display: flex;
@@ -19,15 +20,18 @@ const AuthenticationContaier: React.FC = (props) => {
   return (
     <Container>
       <AppDescription />
-        <Route path="/login">
-          <LoginForm />
-        </Route>
-        <Route path="/reset-password">
-          <ResetPasswordForm />
-        </Route>
-        <Route path="/signup">
-          <SingupForm />
-        </Route>
+      <Route path="/login">
+        <LoginForm />
+      </Route>
+      <Route path="/reset-password">
+        <ResetPasswordForm />
+      </Route>
+      <Route path="/signup">
+        <SingupForm />
+      </Route>
+      <Route path="/new_password">
+        <NewPasswordForm />
+      </Route>
     </Container>
   );
 }

@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch } from "./index";
-import { RootState } from "./index";
+import { RootState } from './index'
 
 const axios = require("axios").default;
 
@@ -15,13 +14,10 @@ type InitialStateType = {
   status: "idle" | "loading" | "pending";
   error: string | null;
   token: string | null;
+  tokenPassword: string | null;
 };
 
 type Error = {
-  message: string;
-};
-
-type ErrorsignUp = {
   message: { response: { data: [{ message: string }] } };
 };
 
@@ -38,6 +34,7 @@ const initialState: InitialStateType = {
   status: "idle",
   error: null,
   token: null,
+  tokenPassword: null
 };
 
 export const loginUser = createAsyncThunk<
@@ -46,7 +43,7 @@ export const loginUser = createAsyncThunk<
   // First argument to the payload creator
   { email: string; password: string },
   // Types for ThunkAPI
-  { rejectValue: ErrorsignUp }
+  { rejectValue: Error }
 >("auth/loginUser", async ({ email, password }, thunkApi) => {
   try {
     const response = await axios({
@@ -63,7 +60,7 @@ export const loginUser = createAsyncThunk<
 
     return { email: email, token: response.data.token };
   } catch (error) {
-    return thunkApi.rejectWithValue({ message: error } as ErrorsignUp);
+    return thunkApi.rejectWithValue({ message: error } as Error);
   }
 });
 
@@ -82,7 +79,7 @@ export const signupUser = createAsyncThunk<
     extra: {
       jwt: string;
     };
-    rejectValue: ErrorsignUp;
+    rejectValue: Error;
   }
 >(
   "auth/signupUser",
@@ -103,46 +100,76 @@ export const signupUser = createAsyncThunk<
       });
       return response;
     } catch (error) {
-      return thunkApi.rejectWithValue({ message: error } as ErrorsignUp);
+      return thunkApi.rejectWithValue({ message: error } as Error);
     }
   }
 );
 
 export const forgotPassword = createAsyncThunk<
   // Return type of the payload creator
-  string,
+  {data: string},
   // First argument to the payload creator
-  {
-    token: string,
-
-  },
+  string,
   // Types for ThunkAPI
   {
     extra: {
       jwt: string;
     };
-    rejectValue: ErrorsignUp;
+    rejectValue: Error;
   }
->(
-  "auth/signupUser",
-  async (email, thunkApi) => {
-    try {
-      const response = await axios({
-        method: "post",
-        url: "http://localhost:3333/passwords",
-        data: {
-          email
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return response;
-    } catch (error) {
-      return thunkApi.rejectWithValue({ message: error } as ErrorsignUp);
+>("auth/forgotPassword", async (email, thunkApi) => {
+  try {
+    const response = await axios({
+      method: "post",
+      url: "http://localhost:3333/passwords",
+      data: {
+        email,
+        redirect_url: "http://localhost:3000/new_password",
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response;
+  } catch (error) {
+    return thunkApi.rejectWithValue({ message: error } as Error);
+  }
+});
+
+export const newPassword = createAsyncThunk<
+  // Return type of the payload creator
+  null,
+  // First argument to the payload creator
+  { password: string; password_confirmation: string },
+  // Types for ThunkAPI
+  {
+    extra: {
+      jwt: string;
     }
+    state: RootState
+    rejectValue: Error
   }
-);
+>("auth/newPassword", async ({ password, password_confirmation }, thunkApi) => {
+  const { tokenPassword } = thunkApi.getState().auth;
+  try {
+    const response = await axios({
+      method: "put",
+      url: "http://localhost:3333/passwords",
+      data: {
+        password,
+        password_confirmation,
+        token: tokenPassword,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response;
+  } catch (error) {
+    return thunkApi.rejectWithValue({ message: error } as Error);
+  }
+});
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -187,10 +214,6 @@ const authSlice = createSlice({
       state.error = null;
     });
 
-    builder.addCase(signupUser.fulfilled, (state, { payload }) => {
-      state.status = "idle";
-    });
-
     builder.addCase(signupUser.rejected, (state, { payload }) => {
       state.error =
         payload?.message.response.data[0].message ||
@@ -201,11 +224,12 @@ const authSlice = createSlice({
     builder.addCase(forgotPassword.pending, (state) => {
       state.status = "loading";
       state.error = null;
+      state.tokenPassword = null;
     });
 
     builder.addCase(forgotPassword.fulfilled, (state, { payload }) => {
       state.status = "idle";
-      
+      state.tokenPassword = payload.data
     });
 
     builder.addCase(forgotPassword.rejected, (state, { payload }) => {
@@ -214,6 +238,18 @@ const authSlice = createSlice({
         "Algo deu errado. Tente novamente";
       state.status = "idle";
     }) 
+
+    builder.addCase(newPassword.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    });
+
+    builder.addCase(newPassword.rejected, (state, { payload }) => {
+      state.error =
+        payload?.message.response.data[0].message ||
+        "Algo deu errado. Tente novamente";
+      state.status = "idle";
+    }); 
   },
 });
 

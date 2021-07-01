@@ -25,6 +25,9 @@ function App() {
       <Route path="/signup">
         <AuthenticationContaier />
       </Route>
+      <Route path="/new_password">
+        <AuthenticationContaier />
+      </Route>
       <Layout>
         <Route path="/" exact>
           <Home />
