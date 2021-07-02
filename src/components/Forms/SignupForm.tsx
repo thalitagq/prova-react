@@ -27,7 +27,7 @@ function SignupForm() {
   const history = useHistory();  
   const { error } = useSelector((state: RootState) => state.auth)
 
-  const signupHandler = () => {
+  const signupHandler = async() => {
     const regex = /^[\w+.]+@\w+\.[\w^_]{2,}(?:\.\w{1,2})?$/;
 
 
@@ -43,7 +43,7 @@ function SignupForm() {
         passwordConfirmRef?.current.value.length > 3 &&
         nameRef.current.value.length > 0
       ) {
-        dispatch(
+        await dispatch(
           signupUser({
             username: nameRef?.current.value,
             email: emailRef?.current.value,
@@ -55,8 +55,6 @@ function SignupForm() {
           alert("Cadastro feito com sucesso");
           return history.push("/");
         }
-        console.log("ERROR", error);
-
         return alert(error);
       }
       alert("Dados inválidos");

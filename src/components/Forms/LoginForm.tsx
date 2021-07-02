@@ -21,17 +21,18 @@ function LoginForm() {
   const history = useHistory()
   const { error } = useSelector((state: RootState) => state.auth);
 
-  const loginHandler = () => {
+const loginHandler = async() => {
     const regex = /^[\w+.]+@\w+\.[\w^_]{2,}(?:\.\w{1,2})?$/;
     if (emailRef.current != null && passwordRef.current != null) {
       if(regex.test(emailRef.current.value) && passwordRef?.current.value.length > 3){
-        dispatch(
+        await dispatch(
           loginUser({email: emailRef?.current.value, password: passwordRef?.current.value})
         )
+
         if (error) {
           return alert(error);
         }
-        history.push("/");
+        history.push("/")
       }
       else{
         alert('Email ou senha inválidos')

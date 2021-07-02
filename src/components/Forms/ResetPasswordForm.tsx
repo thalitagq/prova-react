@@ -19,10 +19,10 @@ function ResetPasswordForm() {
   const dispatch = useDispatch();
   const { error } = useSelector((state: RootState) => state.auth)
 
-  const resetPasswordHandler = () => {
+  const resetPasswordHandler = async() => {
     if (emailRef.current != null) {
       if (regex.test(emailRef.current.value)) {
-        dispatch(forgotPassword(emailRef.current.value));
+        await dispatch(forgotPassword(emailRef.current.value));
         if (!error) {
           return history.push("/new_password");
         }

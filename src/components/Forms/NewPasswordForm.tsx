@@ -20,13 +20,13 @@ function NewPasswordForm() {
   const history = useHistory();
   const { error } = useSelector((state: RootState) => state.auth);
 
-  const saveHandler = () => {
+  const saveHandler = async() => {
     if (passwordRef.current != null && passworConfirmRef.current != null) {
       if (
         passwordRef?.current.value.length > 3 &&
         passworConfirmRef?.current.value.length > 3
       ) {
-        dispatch(
+        await dispatch(
           newPassword({
             password: passwordRef?.current.value,
             password_confirmation: passworConfirmRef?.current.value,

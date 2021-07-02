@@ -10,6 +10,7 @@ type User = {
 };
 
 type InitialStateType = {
+  user_id: number | null;
   user: User | null;
   status: "idle" | "loading" | "pending";
   error: string | null;
@@ -24,9 +25,11 @@ export type Error = {
 type LoginReturnType = {
   email: string;
   token: string;
+  user_id: number;
 };
 
 const initialState: InitialStateType = {
+  user_id: Number(localStorage.getItem("id")) || null,
   user: {
     email: localStorage.getItem("email") || null,
     password: localStorage.getItem("password"),
@@ -43,7 +46,12 @@ export const loginUser = createAsyncThunk<
   // First argument to the payload creator
   { email: string; password: string },
   // Types for ThunkAPI
-  { rejectValue: Error }
+  {
+    extra: {
+      jwt: string;
+    }
+    rejectValue: Error;
+  }
 >("auth/loginUser", async ({ email, password }, thunkApi) => {
   try {
     const response = await axios({
@@ -58,7 +66,7 @@ export const loginUser = createAsyncThunk<
       },
     });
 
-    return { email: email, token: response.data.token };
+    return { email: email, token: response.data.token, user_id: response.data.user_id };
   } catch (error) {
     return thunkApi.rejectWithValue({ message: error } as Error);
   }
@@ -78,7 +86,7 @@ export const signupUser = createAsyncThunk<
   {
     extra: {
       jwt: string;
-    };
+    }
     rejectValue: Error;
   }
 >(
@@ -188,6 +196,7 @@ const authSlice = createSlice({
       localStorage.removeItem("email");
       localStorage.removeItem("password");
       localStorage.removeItem("token");
+      localStorage.removeItem("id")
     },
   },
   extraReducers: (builder) => {
@@ -199,8 +208,10 @@ const authSlice = createSlice({
     builder.addCase(loginUser.fulfilled, (state, { payload }) => {
       state.user!.email = payload.email;
       state.token = payload.token;
+      state.user_id = payload["user_id"]
       localStorage.setItem("token", payload.token);
       localStorage.setItem("email", payload.email);
+      localStorage.setItem("id", payload["user_id"].toString());
       state.status = "idle";
     });
 

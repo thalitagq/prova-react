@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import gamesJson from './games.json'
 import { Error } from './auth'
 import { RootState } from './index'
-import { useDispatch } from 'react-redux'
 
 const axios = require('axios')
 
@@ -15,6 +14,14 @@ export type Game = {
   color: string;
   "min-cart-value": number;
 };
+
+type Bet = {
+  user_id: number;
+  game_id: number;
+  total_price: number;
+  date: Date;
+  numbers: string[]
+}
 
 type InitialStateType = {
   games: Game[],
@@ -46,6 +53,33 @@ export const getGames = createAsyncThunk<
       method: "get",
       url: "http://localhost:3333/games",
       headers: { Authorization: `Bearer ${token}`},
+    });
+    return response;
+  } catch (error) {
+    return thunkApi.rejectWithValue({ message: error } as Error);
+  }
+})
+
+export const saveBet = createAsyncThunk<
+  null,
+  {bets: Bet[]},
+  {
+    extra: {
+      jwt: string;
+    };
+    state: RootState;
+    rejectValue: Error;
+  }
+>("games/saveBet", async (bets, thunkApi) => {
+  const { token } = thunkApi.getState().auth;
+  try {
+    const response = await axios({
+      method: "post",
+      url: "http://localhost:3333/bets",
+      data:{
+        bets: {bets}
+      },
+      headers: { Authorization: `Bearer ${token}` },
     });
     return response;
   } catch (error) {
