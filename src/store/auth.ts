@@ -17,8 +17,8 @@ type InitialStateType = {
   tokenPassword: string | null;
 };
 
-type Error = {
-  message: { response: { data: [{ message: string }] } };
+export type Error = {
+  message: { response: { data: [{ message: string }] } }
 };
 
 type LoginReturnType = {
@@ -33,8 +33,8 @@ const initialState: InitialStateType = {
   },
   status: "idle",
   error: null,
-  token: null,
-  tokenPassword: null
+  token: localStorage.getItem("password"),
+  tokenPassword: null,
 };
 
 export const loginUser = createAsyncThunk<
@@ -187,6 +187,7 @@ const authSlice = createSlice({
       state.user = { email: "", password: "" };
       localStorage.removeItem("email");
       localStorage.removeItem("password");
+      localStorage.removeItem("token");
     },
   },
   extraReducers: (builder) => {
@@ -198,6 +199,7 @@ const authSlice = createSlice({
     builder.addCase(loginUser.fulfilled, (state, { payload }) => {
       state.user!.email = payload.email;
       state.token = payload.token;
+      localStorage.setItem("token", payload.token);
       localStorage.setItem("email", payload.email);
       state.status = "idle";
     });

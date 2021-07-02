@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import GameTag, { GameProps } from "../components/Game";
 import { RootState } from "../store/index";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ActionButton1 } from "../styles/FormStyledComponents";
 import { FiArrowRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import GameButton from "../components/GameButton";
 import { useEffect, useState } from "react";
+import { getGames } from '../store/games'
 
 const Title = styled.h1`
   color: #707070;
@@ -61,6 +62,11 @@ function Home() {
   );
   const { gamesSaved } = useSelector((state: RootState) => state.cart);
   const [filteredGames, setFilteredGames] = useState<GameProps[]>([]);
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getGames());
+  }, [dispatch]);
 
   useEffect(() => {
     for (const bet of gamesSaved) {

@@ -1,5 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import gamesJson from './games.json'
+import { Error } from './auth'
+import { RootState } from './index'
+import { useDispatch } from 'react-redux'
+
+const axios = require('axios')
 
 export type Game = {
   type: string;
@@ -15,19 +20,47 @@ type InitialStateType = {
   games: Game[],
   selectedGame: Game,
   selectedNumbers: string[],
-  isGameCompleted: boolean
+  isGameCompleted: boolean,
+  status: 'idle' | 'loading' | 'pending',
+  error: string | null
 }
-
-const initialStateObj: InitialStateType = {
-  games: gamesJson.types,
-  selectedGame: gamesJson.types[0],
-  selectedNumbers: [],
-  isGameCompleted: false
-};
 
 const generateRandomNumber = (range: number) => {
   return Math.ceil(Math.random() * range);
 }
+
+export const getGames = createAsyncThunk<
+  {data: Game[]},
+  void,
+  {
+    extra: {
+      jwt: string;
+    };
+    state: RootState;
+    rejectValue: Error;
+  }
+>("games/getGames", async (_, thunkApi) => {
+  const { token } = thunkApi.getState().auth;
+  try {
+    const response = await axios({
+      method: "get",
+      url: "http://localhost:3333/games",
+      headers: { Authorization: `Bearer ${token}`},
+    });
+    return response;
+  } catch (error) {
+    return thunkApi.rejectWithValue({ message: error } as Error);
+  }
+});
+
+const initialStateObj: InitialStateType = {
+  games: [],
+  selectedGame: gamesJson.types[0],
+  selectedNumbers: [],
+  isGameCompleted: false,
+  status: "idle",
+  error: null,
+};
 
 export const gamesSlice = createSlice({
   name: "games",
@@ -42,8 +75,8 @@ export const gamesSlice = createSlice({
       state.selectedNumbers.push(action.payload);
     },
     removeNumber: (state, action: PayloadAction<string>) => {
-      console.log('remove number');
-      
+      console.log("remove number");
+
       state.selectedNumbers = state.selectedNumbers.filter(
         (item) => item !== action.payload
       );
@@ -52,11 +85,12 @@ export const gamesSlice = createSlice({
       state.selectedNumbers = [];
     },
     completeGame: (state) => {
-      let remainingNumbers = state.selectedGame["max-number"] - state.selectedNumbers.length;
-      
+      let remainingNumbers =
+        state.selectedGame["max-number"] - state.selectedNumbers.length;
+
       if (remainingNumbers === 0) {
         remainingNumbers = state.selectedGame["max-number"];
-        state.selectedNumbers = []
+        state.selectedNumbers = [];
         state.isGameCompleted = false;
       }
 
@@ -66,12 +100,33 @@ export const gamesSlice = createSlice({
           randomNumber = generateRandomNumber(remainingNumbers);
         }
         console.log(randomNumber);
-        
+
         state.selectedNumbers.push(randomNumber.toString());
       }
 
-      state.isGameCompleted = true
-    }
+      state.isGameCompleted = true;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getGames.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    });
+    
+    builder.addCase(getGames.fulfilled, (state, { payload }) => {
+      state.games = payload.data
+      state.status = "idle";
+    });
+
+    builder.addCase(getGames.rejected, (state, { payload }) => {
+      console.log("GET GAMES ERROR:", payload);
+      state.error =
+        payload?.message.response.data[0].message ||
+        "Error ao carregar os jogos";
+      state.status = "idle";
+    });
+
+
   },
 });
 

@@ -28,13 +28,14 @@ function LoginForm() {
         dispatch(
           loginUser({email: emailRef?.current.value, password: passwordRef?.current.value})
         )
-        if (!error) {
-          history.push('/')
-          return
+        if (error) {
+          return alert(error);
         }
-        return alert(error);
+        history.push("/");
       }
-      alert('Email ou senha inválidos')
+      else{
+        alert('Email ou senha inválidos')
+      }
     }
   };
 
