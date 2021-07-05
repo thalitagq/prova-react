@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { getBets, saveBet } from "./api";
 
 export type Item = {
   id: number
@@ -12,7 +13,7 @@ export type Item = {
 type InitialStateType = {
   cart: Item[];
   totalPrice: number;
-  gamesSaved: Item[][]
+  gamesSaved: Item[]
 };
 
 const initialState: InitialStateType = {
@@ -34,16 +35,24 @@ const cartSlice = createSlice({
       state.totalPrice -= action.payload.price;
     },
     saveGame: (state) => {
-      if (state.totalPrice < 30) {
-        return alert('As apostas devem ser de no mínimo R$ 30,00')
-      }
+      // if (state.totalPrice < 30) {
+      //   return alert('As apostas devem ser de no mínimo R$ 30,00')
+      // }
       state.gamesSaved.push(state.cart)
+
       state.cart = []
       state.totalPrice = 0
     },
     resetSavedGames: (state) => {
       state.gamesSaved = []
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getBets.fulfilled , (state, {payload})=>{
+      if (payload) {
+        state.gamesSaved = payload.data
+      }
+    })
   }
 })
 

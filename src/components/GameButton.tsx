@@ -43,12 +43,12 @@ const GameButton: React.FC<ButtonProps> = (props: ButtonProps) => {
   }
 
   useEffect(() => {
-    if (selectedGame.type === props.text) {
+    if (selectedGame?.type === props.text) {
       setIsActive(true);
     }
-  }, [props.text, selectedGame.type]);
+  }, [props.text, selectedGame?.type]);
 
-  if(isActive && (selectedGame.type === props.text)){
+  if(isActive && (selectedGame!.type === props.text)){
     return <ButtonActive color={props.color} >{props.text}</ButtonActive>
   }
 

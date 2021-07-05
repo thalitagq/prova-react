@@ -10,7 +10,7 @@ import {
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { signupUser } from '../../store/auth'
+import { signupUser } from '../../store/api'
 import styled from "styled-components";
 
 const ButtonRegister = styled(ActionButton1)`

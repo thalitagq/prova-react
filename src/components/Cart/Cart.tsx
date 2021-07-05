@@ -6,6 +6,7 @@ import { RootState } from "../../store";
 import { cartActions } from '../../store/cart'
 import {transformPrice} from "../Game"
 import { FiArrowRight } from "react-icons/fi";
+import { saveBet } from '../../store/api'
 
 const Container = styled(Card)`
   /* padding: 1rem; */
@@ -63,8 +64,9 @@ function Cart() {
   const dispatch = useDispatch()
   const msg = <Title style={{ margin: "auto" }}>Carrinho vazio</Title>;
 
-  const saveBetHandler = () => {
-    dispatch(cartActions.saveGame());
+  const saveBetHandler = async() => {
+    dispatch(saveBet())
+    dispatch(cartActions.saveGame())
   }
 
   return (

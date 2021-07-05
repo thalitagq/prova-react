@@ -11,7 +11,7 @@ import {
 } from "../../styles/FormStyledComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom'
-import { loginUser } from '../../store/auth'
+import { loginUser } from '../../store/api'
 import { RootState } from "../../store";
 
 function LoginForm() {

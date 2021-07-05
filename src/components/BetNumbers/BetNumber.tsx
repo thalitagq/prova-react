@@ -32,7 +32,7 @@ const BetNumber: React.FC<BetNumberProps> = (props: BetNumberProps) => {
   const dispatch = useDispatch()
 
   const onClickNumberHandler = () => {
-    if ( selectedNumbers.length ===  selectedGame['max-number'] && !selectedNumbers.includes(props.number)){
+    if ( selectedNumbers.length ===  selectedGame!['max-number'] && !selectedNumbers.includes(props.number)){
       return
     }
 

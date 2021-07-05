@@ -88,19 +88,19 @@ function Bet() {
   };
 
   const addToCartHandler = () => {
-    if (selectedNumbers.length < selectedGame["max-number"]) {
+    if (selectedNumbers.length < selectedGame!["max-number"]) {
       return alert("Jogo incompleto");
     }
     dispatch(
       cartActions.addToCart({
         id: 0,
-        type: selectedGame.type,
+        type: selectedGame!.type,
         date: new Date().toLocaleDateString(),
         numbers: selectedNumbers,
-        price: selectedGame.price,
-        color: selectedGame.color,
+        price: selectedGame!.price,
+        color: selectedGame!.color,
       })
-    );
+    )
     dispatch(gamesActions.clearGame());
   };
 
@@ -109,7 +109,7 @@ function Bet() {
       <BetWraper>
         <Title>
           <strong>NEW BET FOR </strong>
-          {selectedGame.type}
+          {selectedGame?.type}
         </Title>
         <Paragraph style={{ marginBottom: "20px" }}>
           <strong>Choose a game</strong>
@@ -122,9 +122,9 @@ function Bet() {
         <Paragraph style={{ marginBottom: "30px" }}>
           <strong>Fill your bet</strong>
           <br />
-          {selectedGame.description}
+          {selectedGame?.description}
         </Paragraph>
-        <BetNumbers range={selectedGame.range} color={selectedGame.color}/>
+        <BetNumbers range={selectedGame!.range} color={selectedGame!.color}/>
         <Actions>
           <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
             <ButtonGameAction onClick={completeGameHandler}>

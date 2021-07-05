@@ -10,7 +10,7 @@ import {
 } from "../../styles/FormStyledComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { newPassword } from "../../store/auth";
+import { newPassword } from "../../store/api";
 import { RootState } from "../../store";
 
 function NewPasswordForm() {

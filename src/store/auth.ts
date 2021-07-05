@@ -1,7 +1,5 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from './index'
-
-const axios = require("axios").default;
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { forgotPassword, loginUser, newPassword, signupUser } from "./api";
 
 type User = {
   username?: string | null;
@@ -22,162 +20,17 @@ export type Error = {
   message: { response: { data: [{ message: string }] } }
 };
 
-type LoginReturnType = {
-  email: string;
-  token: string;
-  user_id: number;
-};
-
 const initialState: InitialStateType = {
-  user_id: Number(localStorage.getItem("id")) || null,
+  user_id: Number(localStorage.getItem("user_id")) || null,
   user: {
     email: localStorage.getItem("email") || null,
     password: localStorage.getItem("password"),
   },
   status: "idle",
   error: null,
-  token: localStorage.getItem("password"),
+  token: localStorage.getItem("token"),
   tokenPassword: null,
 };
-
-export const loginUser = createAsyncThunk<
-  // Return type of the payload creator
-  LoginReturnType,
-  // First argument to the payload creator
-  { email: string; password: string },
-  // Types for ThunkAPI
-  {
-    extra: {
-      jwt: string;
-    }
-    rejectValue: Error;
-  }
->("auth/loginUser", async ({ email, password }, thunkApi) => {
-  try {
-    const response = await axios({
-      method: "post",
-      url: "http://localhost:3333/sessions",
-      data: {
-        email: email,
-        password: password,
-      },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    return { email: email, token: response.data.token, user_id: response.data.user_id };
-  } catch (error) {
-    return thunkApi.rejectWithValue({ message: error } as Error);
-  }
-});
-
-export const signupUser = createAsyncThunk<
-  // Return type of the payload creator
-  { email: string; password: string; token: string },
-  // First argument to the payload creator
-  {
-    username: string;
-    email: string;
-    password: string;
-    password_confirm: string;
-  },
-  // Types for ThunkAPI
-  {
-    extra: {
-      jwt: string;
-    }
-    rejectValue: Error;
-  }
->(
-  "auth/signupUser",
-  async ({ username, email, password, password_confirm }, thunkApi) => {
-    try {
-      const response = await axios({
-        method: "post",
-        url: "http://localhost:3333/users",
-        data: {
-          username,
-          email,
-          password,
-          password_confirmation: password_confirm,
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return response;
-    } catch (error) {
-      return thunkApi.rejectWithValue({ message: error } as Error);
-    }
-  }
-);
-
-export const forgotPassword = createAsyncThunk<
-  // Return type of the payload creator
-  {data: string},
-  // First argument to the payload creator
-  string,
-  // Types for ThunkAPI
-  {
-    extra: {
-      jwt: string;
-    };
-    rejectValue: Error;
-  }
->("auth/forgotPassword", async (email, thunkApi) => {
-  try {
-    const response = await axios({
-      method: "post",
-      url: "http://localhost:3333/passwords",
-      data: {
-        email,
-        redirect_url: "http://localhost:3000/new_password",
-      },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return response;
-  } catch (error) {
-    return thunkApi.rejectWithValue({ message: error } as Error);
-  }
-});
-
-export const newPassword = createAsyncThunk<
-  // Return type of the payload creator
-  null,
-  // First argument to the payload creator
-  { password: string; password_confirmation: string },
-  // Types for ThunkAPI
-  {
-    extra: {
-      jwt: string;
-    }
-    state: RootState
-    rejectValue: Error
-  }
->("auth/newPassword", async ({ password, password_confirmation }, thunkApi) => {
-  const { tokenPassword } = thunkApi.getState().auth;
-  try {
-    const response = await axios({
-      method: "put",
-      url: "http://localhost:3333/passwords",
-      data: {
-        password,
-        password_confirmation,
-        token: tokenPassword,
-      },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return response;
-  } catch (error) {
-    return thunkApi.rejectWithValue({ message: error } as Error);
-  }
-});
-
 
 const authSlice = createSlice({
   name: "auth",
@@ -196,7 +49,7 @@ const authSlice = createSlice({
       localStorage.removeItem("email");
       localStorage.removeItem("password");
       localStorage.removeItem("token");
-      localStorage.removeItem("id")
+      localStorage.removeItem("user_id")
     },
   },
   extraReducers: (builder) => {
@@ -207,11 +60,11 @@ const authSlice = createSlice({
 
     builder.addCase(loginUser.fulfilled, (state, { payload }) => {
       state.user!.email = payload.email;
-      state.token = payload.token;
-      state.user_id = payload["user_id"]
-      localStorage.setItem("token", payload.token);
+      state.token = payload.token.token;
+      state.user_id = payload["user_id"].id
+      localStorage.setItem("token", payload.token.token);
       localStorage.setItem("email", payload.email);
-      localStorage.setItem("id", payload["user_id"].toString());
+      localStorage.setItem("user_id", payload["user_id"].id.toString());
       state.status = "idle";
     });
 

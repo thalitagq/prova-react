@@ -7,7 +7,7 @@ import { FiArrowRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import GameButton from "../components/GameButton";
 import { useEffect, useState } from "react";
-import { getGames } from '../store/games'
+import { getGames } from '../store/api'
 
 const Title = styled.h1`
   color: #707070;
@@ -65,12 +65,14 @@ function Home() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getGames());
-  }, [dispatch]);
+    if(games.length === 0){
+      dispatch(getGames());
+    }
+  }, [dispatch, games]);
 
   useEffect(() => {
     for (const bet of gamesSaved) {
-      setFilteredGames(bet.filter((game) => game.type === selectedGame.type));
+      setFilteredGames(bet.filter((game) => game.type === selectedGame!.type));
     }
   }, [selectedGame, gamesSaved]);
 

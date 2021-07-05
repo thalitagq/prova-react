@@ -8,7 +8,7 @@ import {
   ActionButton1,
   ActionButton2,
 } from "../../styles/FormStyledComponents";
-import { forgotPassword } from '../../store/auth'
+import { forgotPassword } from '../../store/api'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store/index'
 
