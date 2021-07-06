@@ -65,7 +65,7 @@ function Cart() {
   const msg = <Title style={{ margin: "auto" }}>Carrinho vazio</Title>;
 
   const saveBetHandler = async() => {
-    dispatch(saveBet())
+    await dispatch(saveBet())
     dispatch(cartActions.saveGame())
   }
 

@@ -4,8 +4,11 @@ import { useHistory } from "react-router";
 import { useDispatch } from 'react-redux'
 import { authActions } from "../../store/auth";
 import { cartActions } from '../../store/cart'
+import { gamesActions } from "../../store/games";
 import { Route } from 'react-router-dom'
 import React from "react";
+import { persistor, RootState } from "../../store";
+import { useSelector } from "react-redux";
 
 const Nav = styled.nav`
   height: 75px;
@@ -67,10 +70,22 @@ function Navbar() {
   const clickHomehandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     history.push('/');
   }
+  const state = useSelector((state: RootState) => state)
 
-  const logoutHandler = () => {
+  const logoutHandler = async() => {
+    // await persistor.purge()
+    // await persistor.purge()
+    setTimeout(() => persistor.purge(), 300);
     dispatch(authActions.logout())
-    dispatch(cartActions.resetSavedGames())
+    console.log(state.auth);
+    dispatch(authActions.resetState())
+    console.log(state.auth);
+
+    // dispatch(cartActions.resetSavedGames())
+    dispatch(cartActions.resetState())
+    dispatch(gamesActions.resetState())
+    console.log(state);
+    
     history.push('/login')
   }
 

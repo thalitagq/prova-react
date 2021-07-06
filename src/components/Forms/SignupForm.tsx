@@ -53,7 +53,7 @@ function SignupForm() {
         );
         if (!error) {
           alert("Cadastro feito com sucesso");
-          return history.push("/");
+          return history.push("/login");
         }
         return alert(error);
       }

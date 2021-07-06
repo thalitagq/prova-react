@@ -7,7 +7,7 @@ import { FiArrowRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import GameButton from "../components/GameButton";
 import { useEffect, useState } from "react";
-import { getGames } from '../store/api'
+import { getBets, getGames } from "../store/api";
 
 const Title = styled.h1`
   color: #707070;
@@ -56,37 +56,55 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
+const Text = styled(Title)`
+  font-weight: 300;
+`;
+
 function Home() {
   const { games, selectedGame } = useSelector(
     (state: RootState) => state.games
   );
-  const { gamesSaved } = useSelector((state: RootState) => state.cart);
+  const { gamesSaved, isBetsStoredEmpty } = useSelector((state: RootState) => state.cart);
   const [filteredGames, setFilteredGames] = useState<GameProps[]>([]);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if(games.length === 0){
-      dispatch(getGames());
+    const getGamesHandler = async () => {
+      await dispatch(getGames());
+    };
+
+    const getBetsHandler = async () => {
+      await dispatch(getBets());
+    };
+
+    if (games.length === 0) {
+      getGamesHandler();
     }
-  }, [dispatch, games]);
+    if (gamesSaved.length === 0 && isBetsStoredEmpty) {
+      getBetsHandler();
+    }
+  }, [dispatch, games.length, gamesSaved.length, isBetsStoredEmpty]);
 
   useEffect(() => {
-    for (const bet of gamesSaved) {
-      setFilteredGames(bet.filter((game) => game.type === selectedGame!.type));
-    }
+    setFilteredGames(
+      gamesSaved.filter((game) => game.type === selectedGame!.type)
+    );
   }, [selectedGame, gamesSaved]);
 
   return (
     <Container>
       <div>
         <Title>Recent Games</Title>
+        {filteredGames.length === 0 && (
+          <Text>Não há apostas feitas em <strong>{selectedGame?.type}</strong></Text>
+        )}
         {filteredGames.map((game) => (
           <div style={{ marginBottom: "10px" }}>
             <GameTag
+              key={game.id}
               date={game.date}
               price={game.price}
               color={game.color}
-              key={game.id}
               id={game.id}
               numbers={game.numbers}
               type={game.type}

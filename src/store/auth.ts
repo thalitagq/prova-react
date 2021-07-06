@@ -20,21 +20,22 @@ export type Error = {
   message: { response: { data: [{ message: string }] } }
 };
 
-const initialState: InitialStateType = {
-  user_id: Number(localStorage.getItem("user_id")) || null,
-  user: {
-    email: localStorage.getItem("email") || null,
-    password: localStorage.getItem("password"),
-  },
-  status: "idle",
-  error: null,
-  token: localStorage.getItem("token"),
-  tokenPassword: null,
-};
+const initialState = () =>
+  ({
+    user_id: Number(localStorage.getItem("user_id")) || null,
+    user: {
+      email: localStorage.getItem("email") || null,
+      password: localStorage.getItem("password"),
+    },
+    status: "idle",
+    error: null,
+    token: localStorage.getItem("token"),
+    tokenPassword: null,
+  } as InitialStateType);
 
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: initialState(),
   reducers: {
     login: (
       state,
@@ -49,8 +50,9 @@ const authSlice = createSlice({
       localStorage.removeItem("email");
       localStorage.removeItem("password");
       localStorage.removeItem("token");
-      localStorage.removeItem("user_id")
+      localStorage.removeItem("user_id");
     },
+    resetState: (state) => initialState()
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.pending, (state) => {
@@ -61,7 +63,7 @@ const authSlice = createSlice({
     builder.addCase(loginUser.fulfilled, (state, { payload }) => {
       state.user!.email = payload.email;
       state.token = payload.token.token;
-      state.user_id = payload["user_id"].id
+      state.user_id = payload["user_id"].id;
       localStorage.setItem("token", payload.token.token);
       localStorage.setItem("email", payload.email);
       localStorage.setItem("user_id", payload["user_id"].id.toString());
@@ -95,7 +97,7 @@ const authSlice = createSlice({
 
     builder.addCase(forgotPassword.fulfilled, (state, { payload }) => {
       state.status = "idle";
-      state.tokenPassword = payload.data
+      state.tokenPassword = payload.data;
     });
 
     builder.addCase(forgotPassword.rejected, (state, { payload }) => {
@@ -103,7 +105,7 @@ const authSlice = createSlice({
         payload?.message.response.data[0].message ||
         "Algo deu errado. Tente novamente";
       state.status = "idle";
-    }) 
+    });
 
     builder.addCase(newPassword.pending, (state) => {
       state.status = "loading";
@@ -115,7 +117,7 @@ const authSlice = createSlice({
         payload?.message.response.data[0].message ||
         "Algo deu errado. Tente novamente";
       state.status = "idle";
-    }); 
+    });
   },
 });
 

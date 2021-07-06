@@ -7,12 +7,11 @@ import gamesReducer from './games'
 import cartReducer from './cart'
 import authReducer from './auth'
 import storage from "redux-persist/lib/storage";
-import { Reducer } from "react";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ['games']
+  whitelist: ['games', 'cart']
 };
 
 const combinedReducer = combineReducers({
@@ -21,13 +20,10 @@ const combinedReducer = combineReducers({
   auth: authReducer,
 });
 
-const rootReducer: Reducer<RootState, AnyAction> = (
+const rootReducer = (
   state: RootState,
   action: AnyAction
 ) => {
-  if (action.type === "auth/logout") {
-    state = { } as RootState;
-  }
   return combinedReducer(state, action);
 };
 

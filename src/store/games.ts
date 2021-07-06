@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getGames } from "./api";
+import { getGames, saveBet } from "./api";
 
 export type Game = {
   id: number;
@@ -25,17 +25,18 @@ const generateRandomNumber = (range: number) => {
   return Math.ceil(Math.random() * range);
 };
 
-const initialStateObj: InitialStateType = {
-  games: [],
-  selectedNumbers: [],
-  isGameCompleted: false,
-  status: "idle",
-  error: null,
-};
+const initialState = () =>
+  ({
+    games: [],
+    selectedNumbers: [],
+    isGameCompleted: false,
+    status: "idle",
+    error: null,
+  } as InitialStateType);
 
 export const gamesSlice = createSlice({
   name: "games",
-  initialState: initialStateObj,
+  initialState: initialState(),
   reducers: {
     selectGame: (state, action: PayloadAction<string>) => {
       state.selectedGame = state.games.filter(
@@ -77,6 +78,7 @@ export const gamesSlice = createSlice({
 
       state.isGameCompleted = true;
     },
+    resetState: (state) => initialState(),
   },
   extraReducers: (builder) => {
     builder.addCase(getGames.pending, (state) => {
@@ -91,7 +93,6 @@ export const gamesSlice = createSlice({
     });
 
     builder.addCase(getGames.rejected, (state, { payload }) => {
-      console.log("GET GAMES ERROR:", payload);
       state.error =
         payload?.message.response.data[0].message ||
         "Error ao carregar os jogos";
