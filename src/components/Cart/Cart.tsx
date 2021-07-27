@@ -72,7 +72,7 @@ function Cart() {
   return (
     <Container>
       <Body>
-      <Title>CART </Title>
+        <Title>CART </Title>
         {cart.length > 0
           ? cart.map((item) => {
               return (
@@ -88,12 +88,12 @@ function Cart() {
               );
             })
           : msg}
-      <Total>
-        <strong>
-          <i>CART </i>
-        </strong>
-        <span>TOTAL: R$ {transformPrice(totalPrice)}</span>
-      </Total>
+        <Total>
+          <strong>
+            <i>CART </i>
+          </strong>
+          <span>TOTAL: R$ {transformPrice(totalPrice)}</span>
+        </Total>
       </Body>
       <Footer>
         <SaveButton onClick={saveBetHandler}>

@@ -70,21 +70,14 @@ function Navbar() {
   const clickHomehandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     history.push('/');
   }
-  const state = useSelector((state: RootState) => state)
 
   const logoutHandler = async() => {
-    // await persistor.purge()
-    // await persistor.purge()
     setTimeout(() => persistor.purge(), 300);
     dispatch(authActions.logout())
-    console.log(state.auth);
     dispatch(authActions.resetState())
-    console.log(state.auth);
 
-    // dispatch(cartActions.resetSavedGames())
     dispatch(cartActions.resetState())
     dispatch(gamesActions.resetState())
-    console.log(state);
     
     history.push('/login')
   }

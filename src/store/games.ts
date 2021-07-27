@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getGames, saveBet } from "./api";
+import { getGames } from "./api";
 
 export type Game = {
   id: number;
@@ -47,7 +47,6 @@ export const gamesSlice = createSlice({
       state.selectedNumbers.push(action.payload);
     },
     removeNumber: (state, action: PayloadAction<string>) => {
-      console.log("remove number");
 
       state.selectedNumbers = state.selectedNumbers.filter(
         (item) => item !== action.payload

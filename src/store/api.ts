@@ -36,7 +36,7 @@ export const loginUser = createAsyncThunk<
   try {
     const response = await axios({
       method: "post",
-      url: "http://localhost:3333/sessions",
+      url: "http://192.168.18.9:3333/sessions",
       data: {
         email: email,
         password: password,
@@ -79,7 +79,7 @@ export const signupUser = createAsyncThunk<
     try {
       await axios({
         method: "post",
-        url: "http://localhost:3333/users",
+        url: "http://192.168.18.9:3333/users",
         data: {
           username,
           email,
@@ -113,7 +113,7 @@ export const forgotPassword = createAsyncThunk<
   try {
     const response = await axios({
       method: "post",
-      url: "http://localhost:3333/passwords",
+      url: "http://192.168.18.9:3333/passwords",
       data: {
         email,
         redirect_url: "http://localhost:3000/new_password",
@@ -146,7 +146,7 @@ export const newPassword = createAsyncThunk<
   try {
     await axios({
       method: "put",
-      url: "http://localhost:3333/passwords",
+      url: "http://192.168.18.9:3333/passwords",
       data: {
         password,
         password_confirmation,
@@ -177,7 +177,7 @@ export const getGames = createAsyncThunk<
   try {
     const response = await axios({
       method: "get",
-      url: "http://localhost:3333/games",
+      url: "http://192.168.18.9:3333/games",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -209,19 +209,17 @@ export const saveBet = createAsyncThunk<
     return null;
   }
 
-  const betsTransformed = tranformToBetType(cart, games, user_id as number);
-  console.log(tranformToBetType(cart, games, Number(user_id)));
+  const betsTransformed = tranformToBetType(cart, games, Number(user_id));
   
   try {
-    const response = await axios({
+    await axios({
       method: "post",
-      url: "http://localhost:3333/bets",
+      url: "http://192.168.18.9:3333/bets",
       data: {
         bets: [...betsTransformed],
       },
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log(response);
     
     return null;
   } catch (error) {
@@ -246,12 +244,11 @@ export const getBets = createAsyncThunk<
   try {
     const response = await axios({
       method: "get",
-      url: `http://localhost:3333/bets/${user_id}`,
+      url: `http://192.168.18.9:3333/bets/${user_id}`,
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log(response);
 
-    const transformBets = transformToTypeItem(response.data.data, games)
+    const transformBets = transformToTypeItem(response.data, games)
     return transformBets as Item[];
   } catch (error) {
     return thunkApi.rejectWithValue({ message: error } as Error);
@@ -260,18 +257,12 @@ export const getBets = createAsyncThunk<
 
 function tranformToBetType(items: Item[], games: Game[], user_id: number){
   return items.map((item) => {
-    const info = returnGameInfo(games, item.type);
-    console.log(     { user_id,
-      game_id: info.id,
-      total_price: item.price,
-      date: new Date(item.date).toISOString(),
-      numbers: item.numbers,});
-    
+    const info = returnGameInfo(games, item.type);    
     return {
       user_id,
       game_id: info.id,
       total_price: item.price,
-      date: new Date(item.date).toISOString(),
+      date: item.date.split('/').reverse().join('-'),
       numbers: item.numbers,
     };
   });

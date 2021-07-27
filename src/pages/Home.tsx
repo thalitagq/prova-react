@@ -96,20 +96,22 @@ function Home() {
       <div>
         <Title>Recent Games</Title>
         {filteredGames.length === 0 && (
-          <Text>Não há apostas feitas em <strong>{selectedGame?.type}</strong></Text>
+          <Text>
+            Não há apostas feitas em <strong>{selectedGame?.type}</strong>
+          </Text>
         )}
         {filteredGames.map((game) => (
           <div style={{ marginBottom: "10px" }}>
-            <GameTag
-              key={game.id}
-              date={game.date}
-              price={game.price}
-              color={game.color}
-              id={game.id}
-              numbers={game.numbers}
-              type={game.type}
-            />
-          </div>
+          <GameTag
+            key={game.id}
+            date={game.date}
+            price={game.price}
+            color={game.color}
+            id={game.id}
+            numbers={game.numbers}
+            type={game.type}
+          />
+        </div>
         ))}
       </div>
       <Nav>

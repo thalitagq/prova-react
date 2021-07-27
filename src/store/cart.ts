@@ -24,7 +24,7 @@ const initialState = () =>
     totalPrice: 0,
     gamesSaved: [],
     error: null,
-    isBetsStoredEmpty: false,
+    isBetsStoredEmpty: true,
   } as InitialStateType);
 
 const cartSlice = createSlice({
@@ -58,25 +58,16 @@ const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getBets.fulfilled, (state, { payload }) => {
-      if (payload.length === 0) {
-        state.isBetsStoredEmpty = true;
+      if (payload.length !== 0) {
+        state.isBetsStoredEmpty = false;
+        state.gamesSaved = payload;
       }
-      state.gamesSaved = payload;
-    });
-
-    builder.addCase(saveBet.fulfilled, (state, { payload }) => {
-      // state.games = payload.data;
-      // state.selectedGame = payload.data[0];
-      // state.status = "idle";
-      console.log("PAYLOAD SAVE BET ", payload);
     });
 
     builder.addCase(saveBet.rejected, (state, { payload }) => {
       state.error =
         payload?.message.response.data[0].message ||
         "Error ao carregar os jogos";
-      // state.status = "idle";
-      console.log("PAYLOAD ERROR SAVE BET", payload);
     });
   },
 });
